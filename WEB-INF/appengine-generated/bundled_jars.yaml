@@ -1,0 +1,5 @@
+--- 
+- jruby-stdlib-1.5.6.jar
+- jruby-core-1.5.6.jar
+- jruby-rack-1.0.4.jar
+- appengine-rack.jar

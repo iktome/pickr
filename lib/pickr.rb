@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'flickraw-cached'
-require 'fastercsv'
 require 'yaml'
 require 'json'
 
