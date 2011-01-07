@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+require 'yaml'
+require File.expand_path(File.join(File.dirname(__FILE__), '../lib/pickr'))
+
+$config = YAML.load_file(File.expand_path(File.join(File.dirname(__FILE__), '../config.yml')))
+p $config
+
+gal = Pickr::Gallery.get($config['user_id'])
+
+if gal.sets.count > 0
+	puts "found #{gal.sets.count} sets"
+
+	json = gal.to_json do |set|
+		puts "#{set.id} => \"#{set.title}\""
+	end
+
+	puts "writing to #{$config['primary_photo_cache']}..."
+	File.open($config['primary_photo_cache'], 'w') do |f|
+		f.write(json)
+	end
+
+	puts "done."
+else
+	puts "no sets found."
+end
+
