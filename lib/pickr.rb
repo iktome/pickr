@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'flickraw'
+require 'flickraw-cached'
 require 'fastercsv'
 require 'yaml'
 require 'json'
@@ -7,12 +7,16 @@ require 'json'
 module Pickr
 	$config = YAML.load_file(File.join(File.expand_path(File.dirname(__FILE__)), '../config.yml'))
 
+	FLICKR_PHOTO_URL    = "http://www.flickr.com/photos".freeze
+	FLICKR_STATIC_URL   = "http://farm5.static.flickr.com".freeze
+
 	API_KEY             = $config['flickr_api_key'].freeze
 	AUTH_TOKEN          = $config['auth_token'].freeze
 	USER_ID             = $config['user_id'].freeze
-	FLICKR_PHOTO_URL    = "http://www.flickr.com/photos".freeze
-	FLICKR_STATIC_URL   = "http://farm5.static.flickr.com".freeze
 	PRIMARY_PHOTO_CACHE = $config['primary_photo_cache'].freeze
+	GALLERY_TITLE       = $config['gallery_title'].freeze
+	SET_PHOTO_SIZE      = $config['set_photo_size'].freeze
+
 	FlickRaw.api_key    = API_KEY		
 	
 	class PhotoSet
@@ -61,9 +65,7 @@ module Pickr
 		end
 	
 		def photos_as_html(img_size)
-			photos.map do |photo|
-				html += photo.to_html(img_size);
-			end.join("")
+			photos.map { |photo| photo.to_html(img_size) }.join("")
 		end
 	
 		def to_index_listing
@@ -76,8 +78,9 @@ module Pickr
 		end
 	
 		def to_html(img_size='thumb')
-			photo_list = get_photos_as_html(img_size)
+			photo_list = photos_as_html(img_size)
 			return <<-HTML
+				<a href="/">&lt;&lt;Back to Index</a>
 				<h2>#{@title}</h2>
 				<p class="description">#{@description}</p>
 				<div class="photo-list">

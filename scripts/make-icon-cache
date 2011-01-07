@@ -3,7 +3,6 @@ require 'yaml'
 require File.expand_path(File.join(File.dirname(__FILE__), '../lib/pickr'))
 
 $config = YAML.load_file(File.expand_path(File.join(File.dirname(__FILE__), '../config.yml')))
-p $config
 
 gal = Pickr::Gallery.get($config['user_id'])
 

@@ -1,13 +1,13 @@
 require 'rubygems'
 require 'sinatra'
 
-require 'yaml'
 require 'lib/pickr'
 
+
 get '/?' do
-	Pickr::Gallery.get(Pickr::USER_ID).to_html("test")
+	Pickr::Gallery.get(Pickr::USER_ID).to_html(Pickr::GALLERY_TITLE)
 end
 
 get '/:id' do
-	Pickr::PhotoSet.get(params[id]).to_html($config['set_photo_size'])
+	Pickr::PhotoSet.get(params[:id]).to_html(Pickr::SET_PHOTO_SIZE)
 end
