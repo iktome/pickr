@@ -2,7 +2,6 @@ require 'lib/pickr'
 require 'test/unit'
 
 require 'rubygems'
-require 'nokogiri'
 
 class TestPhoto < Test::Unit::TestCase
 	def setup
@@ -14,11 +13,13 @@ class TestPhoto < Test::Unit::TestCase
 	end
 
 	def test_page_url
-		assert_equal "http://www.flickr.com/photos/26835295@N06/5210606401", @photo.url(:page)
+		assert_equal "http://www.flickr.com/photos/26835295@N06/5210606401", @photo.url(:page),
+			"the urls should be equal"
 	end
 
 	def test_lightbox_url
-		assert_equal "http://www.flickr.com/photos/26835295@N06/5210606401/lightbox", @photo.url(:lightbox)
+		assert_equal "http://www.flickr.com/photos/26835295@N06/5210606401/lightbox", @photo.url(:lightbox),
+			"the urls should be equal"
 	end
 end
 

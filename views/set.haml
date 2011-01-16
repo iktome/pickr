@@ -13,10 +13,13 @@
 
 #selector
 	=haml :selector
+
 %a{ :href => '/' } &lt;&lt;Back to Index
+
 %h1= @set.title
 %span
 	%a{ :href => @set.url, :target => "__set-#{@set.id}" } view on flickr
+
 %p{ :class => 'description' }= @set.description
 #photo-list
 	- @set.photos.each do |photo|
