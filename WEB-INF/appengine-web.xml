@@ -1,6 +1,6 @@
 <!-- Generated from app.yaml. Do not edit. -->
 <appengine-web-app xmlns='http://appengine.google.com/ns/1.0'>
-  <application>pickr</application>
+  <application>pickr-is-cool</application>
   <version>1</version>
   <public-root>/public</public-root>
   <static-files>

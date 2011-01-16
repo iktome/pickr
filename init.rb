@@ -5,9 +5,14 @@ require 'sinatra/static_assets'
 
 require 'lib/pickr'
 
-# ajax selection window
-get '/selector' do
-	haml :selector, :layout => false
+get '/thumbnail/:id' do
+	@photo = Pickr::Photo.get(params[:id])
+
+	haml :thumbnail, :layout => false
+end
+
+post '/complete-selection' do
+
 end
 
 post '/send-request' do

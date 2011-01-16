@@ -1,11 +1,30 @@
+:css
+	#selector {
+		position: relative;
+		top: 0px;
+		left: 0px;
+		width: 100%;
+		background: grey;
+		padding: 10px;
+		display: none;
+	}
+
+	.selector-thumb { display: inline }
+
+#selector
+	=haml :selector
 %a{ :href => '/' } &lt;&lt;Back to Index
 %h1= @set.title
 %p{ :class => 'description' }= @set.description
 #photo-list
 	- @set.photos.each do |photo|
 		#photo-region
-			%a{ :href => photo.url(:page), :target => "__page-#{photo.id}" }
+			%a{ :href => '#', :onclick => "toogleCheckBox($('#select_#{photo.id}'));",
+					:class => 'photo-link' }
+
 				%img{ :class => 'photo', :id => "photo_#{photo.id}", :src => photo.url, :title => photo.title }
+
 			%br
-			%input{ :type => 'checkbox', :name => 'photo', :value => photo.id }
-			%label{ :for => "photo_#{photo.id}" } Select
+			%input{ :type => 'checkbox', :name => 'photo', :id => "select_#{photo.id}", :value => photo.id }
+			%label{ :for => "select_#{photo.id}" } Select
+			%a{ :href => photo.url(:page), :target => "__page-#{photo.id}" } view on flickr

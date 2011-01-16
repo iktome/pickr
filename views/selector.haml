@@ -1,23 +1,24 @@
 %a{ :href => '#', :id => 'close-button' } Close
-%h2 Selected Photos
-#selected
+#selected_photos
 	/ currently selected images go here
-	%p No photos have been selected.
 
-%form{ :action => '#', :method => 'POST' }
-	%p
-		%label{ :for => 'request-name' } Name
-		%br
-		%input{ :type => 'text', :name => 'request[name]', :id => 'request-name', :class => 'required' }
+%form{ :action => '/complete-selection', :method => 'POST' }
+	%input{ :type => 'submit', :value => 'Go to Request Form&gt;&gt;' }
+/
+	%form{ :action => '#', :method => 'POST' }
+		%p
+			%label{ :for => 'request-name' } Name
+			%br
+			%input{ :type => 'text', :name => 'request[name]', :id => 'request-name', :class => 'required' }
+		
+		%p
+			%label{ :for => 'request-email' } Email
+			%br
+			%input{ :type => 'text', :name => 'request[email]', :id => 'request-email', :class => 'required email' }
 	
-	%p
-		%label{ :for => 'request-email' } Email
-		%br
-		%input{ :type => 'text', :name => 'request[email]', :id => 'request-email', :class => 'required email' }
-
-	%p
-		%label{ :for => 'request-phone' } Phone
-		%br
-		%input{ :type => 'text', :name => 'request[phone]', :id => 'request-phone', :class => 'required' }
-
-	%input{ :type => 'submit', :id => 'submit-button', :value => 'Submit' }
+		%p
+			%label{ :for => 'request-phone' } Phone
+			%br
+			%input{ :type => 'text', :name => 'request[phone]', :id => 'request-phone', :class => 'required' }
+	
+		%input{ :type => 'submit', :id => 'submit-button', :value => 'Submit' }
