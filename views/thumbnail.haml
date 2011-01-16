@@ -1,0 +1,8 @@
+.selector-thumb{ :id => "selector-thumb-#{@photo.id}" } 
+	%input{ :type => 'hidden', :class => 'url', :name => "url_#{@photo.id}",
+					:id => "url_#{@photo.id}", :value => @photo.url(:thumb) }
+	
+	/ TODO: create a javascript function for "onclick" stuff
+	%a{ :class => "selected_photo", :id => @photo.id, :onclick => "deSelectPhoto('#{@photo.id}')" }
+		%img{ :width => 75, :height => 75, :src => @photo.url(:square),
+					:style => 'background: url(/images/loading.gif) center no-repeat; background-color: white' }

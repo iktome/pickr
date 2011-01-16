@@ -151,18 +151,13 @@ module Pickr
 		def url(type=SET_PHOTO_SIZE)
 			return @url unless @url.nil? # allows us to override url generation
 			case type
-				when :square, 'square'
-					to_square_url	
-				when :thumbnail, 'thumbnail'
-					to_thumbnail_url
-				when :original, 'original'
-					to_original_url
-				when :medium, 'medium'
-					to_medium_url
-				when :page, 'page'
-					to_page_url
-				else
-					to_medium_url # defaults to medium
+			when :square,    'square'    then to_square_url	
+			when :thumbnail, 'thumbnail' then to_thumbnail_url
+			when :original,  'original'  then to_original_url
+			when :medium,    'medium'    then to_medium_url
+			when :page,      'page'      then to_page_url
+			when :lightbox,  'lightbox'  then to_lightbox_url
+			else to_medium_url # defaults to medium
 			end
 		end
 
@@ -194,6 +189,10 @@ module Pickr
 	
 		def to_page_url
 			@page_url ||= "#{FLICKR_PHOTO_URL}/#{USER_ID}/#{id}"
+		end
+
+		def to_lightbox_url
+			@lightbox_url ||= "#{to_page_url}/lightbox"
 		end
 
 		public

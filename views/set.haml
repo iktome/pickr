@@ -18,7 +18,7 @@
 %p{ :class => 'description' }= @set.description
 #photo-list
 	- @set.photos.each do |photo|
-		#photo-region
+		.photo-region
 			%a{ :href => '#', :onclick => "toogleCheckBox($('#select_#{photo.id}'));",
 					:class => 'photo-link' }
 
@@ -27,4 +27,4 @@
 			%br
 			%input{ :type => 'checkbox', :name => 'photo', :id => "select_#{photo.id}", :value => photo.id }
 			%label{ :for => "select_#{photo.id}" } Select
-			%a{ :href => photo.url(:page), :target => "__page-#{photo.id}" } view on flickr
+			%a{ :href => photo.url(:lightbox), :target => "__page-#{photo.id}" } view on flickr

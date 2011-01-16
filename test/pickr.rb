@@ -13,6 +13,13 @@ class TestPhoto < Test::Unit::TestCase
 		assert_instance_of Pickr::Photo, @photo, "result should be an instace of photo"
 	end
 
+	def test_page_url
+		assert_equal "http://www.flickr.com/photos/26835295@N06/5210606401", @photo.url(:page)
+	end
+
+	def test_lightbox_url
+		assert_equal "http://www.flickr.com/photos/26835295@N06/5210606401/lightbox", @photo.url(:lightbox)
+	end
 end
 
 class TestPhotoSet < Test::Unit::TestCase
