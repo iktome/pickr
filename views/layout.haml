@@ -4,5 +4,6 @@
 		%title Pickr
 		- scripts = %w{ jquery jquery.flickr pickr }.map {|s| "/javascripts/#{s}.js" }
 		= javascript_script_tag *scripts
+		= stylesheet_link_tag '/stylesheets/screen.css'
 	%body
 		= yield

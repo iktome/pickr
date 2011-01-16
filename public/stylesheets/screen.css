@@ -1,4 +1,4 @@
-.set-photo {
+.set-photo, .photo {
 	background: url(/images/loading.gif) center no-repeat;
 	background-color: white;
 }
