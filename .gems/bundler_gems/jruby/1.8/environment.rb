@@ -17,11 +17,27 @@ module Bundler
   ENV["PATH"]     = "#{dir}/../../../../bin:#{ENV["PATH"]}"
   ENV["RUBYOPT"]  = "-r#{file} #{ENV["RUBYOPT"]}"
 
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/haml-3.0.25/bin")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/haml-3.0.25/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/json-1.4.6-java/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/flickraw-0.8.3/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/addressable-2.2.2/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/extlib-0.9.15/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/dm-core-1.0.2/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/lexidecimal-0.0.1/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/dm-appengine-0.1.3/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/jruby-jars-1.5.6/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/jruby-rack-1.0.5/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/tilt-1.2.1/bin")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/tilt-1.2.1/lib")
   $LOAD_PATH.unshift File.expand_path("#{dir}/gems/rack-1.2.1/bin")
   $LOAD_PATH.unshift File.expand_path("#{dir}/gems/rack-1.2.1/lib")
-  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/jruby-jars-1.5.6/lib")
-  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/jruby-rack-1.0.4/lib")
   $LOAD_PATH.unshift File.expand_path("#{dir}/gems/appengine-rack-0.0.12/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/appengine-apis-0.0.22/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/sinatra-1.1.2/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/flickraw-cached-20100707.1")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/emk-sinatra-url-for-0.2.1/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/sinatra-static-assets-0.5.0/lib")
 
   @gemfile = "#{dir}/../../../../Gemfile"
 

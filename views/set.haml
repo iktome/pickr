@@ -1,0 +1,11 @@
+%a{ :href => '/' } &lt;&lt;Back to Index
+%h1= @set.title
+%p{ :class => 'description' }= @set.description
+#photo-list
+	- @set.photos.each do |photo|
+		#photo-region
+			%a{ :href => photo.url(:page), :target => "__page-#{photo.id}" }
+				%img{ :class => 'photo', :id => "photo_#{photo.id}", :src => photo.url, :title => photo.title }
+			%br
+			%input{ :type => 'checkbox', :name => 'photo', :value => photo.id }
+			%label{ :for => "photo_#{photo.id}" } Select

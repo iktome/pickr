@@ -13,11 +13,6 @@ class TestPhoto < Test::Unit::TestCase
 		assert_instance_of Pickr::Photo, @photo, "result should be an instace of photo"
 	end
 
-	def test_photo_to_html
-		doc = Nokogiri::HTML(@photo.to_html)
-		p doc.css('div a[href]')
-	end
-
 end
 
 class TestPhotoSet < Test::Unit::TestCase
@@ -27,7 +22,11 @@ class TestPhotoSet < Test::Unit::TestCase
 	end
 
 	def test_get_photoset_type
-		p @set
 		assert_instance_of Pickr::PhotoSet, @set, "result should be an instace of Pickr::PhotoSet"
+	end
+
+	def test_primary_photo_default_photo
+		photo = @set.primary_photo # starts thread to fetch image and returns a default image
+		assert photo.respond_to?(:url), "default photo class is derived but has a 'url' method"
 	end
 end

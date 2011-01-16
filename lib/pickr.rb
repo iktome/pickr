@@ -1,3 +1,12 @@
+# = Pickr - A Gallery tool for Photographers
+# These classes represent are an abstration away from the Flickr API.
+# They provide methods for creating a gallery of photos for selecting
+# and submitting to the photographer.
+#
+#	= Summary
+#
+#	Pickr::Gallery.get('26835295@N06').to_html
+
 require 'rubygems'
 require 'flickraw-cached'
 require 'yaml'
@@ -9,6 +18,7 @@ module Pickr
 	FLICKR_PHOTO_URL    = "http://www.flickr.com/photos".freeze
 	FLICKR_STATIC_URL   = "http://farm5.static.flickr.com".freeze
 
+	# TODO: make these optionally configurable in a db also
 	API_KEY             = $config['flickr_api_key'].freeze
 	AUTH_TOKEN          = $config['auth_token'].freeze
 	USER_ID             = $config['user_id'].freeze
@@ -17,17 +27,48 @@ module Pickr
 	SET_PHOTO_SIZE      = $config['set_photo_size'].freeze
 
 	FlickRaw.api_key    = API_KEY		
+
+	# TODO: move this stuff to lib/pickr/cache.rb
+	module Cache
 	
+		# TODO: add checking to opts
+		def read(type, *opts)
+			if type == :file
+				JSON.parse(IO.read(opts[:from]))
+			elsif type == :db
+				# return db cache
+				DB.read(opts[:from])
+			end
+		end
+
+		class DB
+			def self.read(table)
+
+			end
+		end
+
+	end
+	
+	# TODO: move this stuff to lib/pickr/db.rb 
+	module DB
+		# use DataMapper
+		# Models:
+		#  - PhotoSet
+		#  - Photo  
+	end
+
+	# A pickr photo set
 	class PhotoSet
 		attr_reader   :id, :description, :photos, :primary_photo_id	
 		attr_accessor :title
 
-		def initialize(id, title, description, primary_photo_id, photos=[])
-			@id               = id
-			@title            = title
-			@description      = description
+		def initialize(set, photos=[])
+			@set              = set
+			@id               = set.id
+			@title            = set.title
+			@description      = set.description
 			@photos           = construct_photos(photos)
-			@primary_photo_id = primary_photo_id
+			@primary_photo_id = set.primary
 		end
 	
 		private
@@ -40,29 +81,17 @@ module Pickr
 
 		public
 	
-		def primary_photo_url
-			begin
-				cache = JSON.parse(IO.read(PRIMARY_PHOTO_CACHE))
-				cache.keys.sort.each do |cache_id|
-					return cache[id] if cache_id == @id
-				end
-			rescue
-				"" # TODO: return a default icon
-			end
+		def primary_photo
+			@primary_photo ||= Photo.new(@set.primary, @set.title, @set.server, @set.secret)
 		end
 	
 		def self.get(id)
 			set  = flickr.photosets.getPhotos :photoset_id => id
 			info = flickr.photosets.getInfo   :photoset_id => id
 
-			PhotoSet.new(id, info.title,  info.description,
-						           set.primary, set.photo)
+			PhotoSet.new(info, set.photo)
 		end
 		
-		def primary_photo
-			@primary_photo ||= Photo.get(@primary_photo_id);
-		end
-	
 		def photos_as_html(img_size)
 			photos.map { |photo| photo.to_html(img_size) }.join("")
 		end
@@ -70,13 +99,13 @@ module Pickr
 		def to_index_listing
 			return <<-HTML
 				<div id="set_#{@id}">
-					<a href="/#{@id}"><img src="#{primary_photo_url}" width="75" height="75" /></a>
+					<a href="/#{@id}"><img src="#{primary_photo.url(:square)}" width="75" height="75" /></a>
 					<a href="/#{@id}">#{@title}</a>
 				</div>
 			HTML
 		end
 	
-		def to_html(img_size='thumb')
+		def to_html(img_size=SET_PHOTO_SIZE)
 			photo_list = photos_as_html(img_size)
 			return <<-HTML
 				<a href="/">&lt;&lt;Back to Index</a>
@@ -103,91 +132,97 @@ module Pickr
 			@server = server
 			@secret = secret
 		end
+
+		def self.blank
+			Photo.new(nil, nil, nil, nil)
+		end
 	
 		def self.get(id)
 			photo = flickr.photos.getInfo :photo_id => id
-
 			Photo.new(id, photo.title, photo.server, photo.secret)
 		end
 	
-		def to_url
-			to_medium_url # defaults to medium
+		# generates url for photo of type:
+		# - square
+		# - thumbnail
+		# - original
+		# - medium
+		# - page
+		def url(type=SET_PHOTO_SIZE)
+			return @url unless @url.nil? # allows us to override url generation
+			case type
+				when :square, 'square'
+					to_square_url	
+				when :thumbnail, 'thumbnail'
+					to_thumbnail_url
+				when :original, 'original'
+					to_original_url
+				when :medium, 'medium'
+					to_medium_url
+				when :page, 'page'
+					to_page_url
+				else
+					to_medium_url # defaults to medium
+			end
+		end
+
+		def url=(value)
+			@url = value
 		end
 	
 		private
 
 		def to_base_url
-			"#{FLICKR_STATIC_URL}/#{server}/#{id}_#{secret}"
+			@base_url ||= "#{FLICKR_STATIC_URL}/#{server}/#{id}_#{secret}"
+		end
+
+		def to_square_url
+			@square_url ||= "#{to_base_url}_s.jpg"
+		end
+	
+		def to_thumbnail_url
+			@thumbnail_url ||= "#{to_base_url}_t.jpg"
+		end
+	
+		def to_original_url
+			@original_url ||= "#{to_base_url}.jpg"
+		end
+	
+		def to_medium_url
+			@medium_url ||= "#{to_base_url}_m.jpg"
+		end
+	
+		def to_page_url
+			@page_url ||= "#{FLICKR_PHOTO_URL}/#{USER_ID}/#{id}"
 		end
 
 		public
 	
-		def to_square_url
-			"#{to_base_url}_s.jpg"
-		end
-	
-		def to_thumbnail_url
-			"#{to_base_url}_t.jpg"
-		end
-	
-		def to_original_url
-			"#{to_base_url}.jpg"
-		end
-	
-		def to_medium_url
-			"#{to_base_url}_m.jpg"
-		end
-	
-		# TODO: find away to detagle this method from USER_ID
-		def to_page_url
-			"#{FLICKR_PHOTO_URL}/#{USER_ID}/#{id}"
-		end
-	
-		def to_html(img_size='thumb')
-			case img_size
-			when 'square'
-				img_url = to_square_url
-			when 'thumb'
-				img_url = to_thumbnail_url
-			when 'medium'
-				img_url = to_medium_url
-			when 'original'
-				img_url = to_original_url
-			else
-				img_url = to_thumbnail_url	
-			end
-			page_url  = to_page_url
+		def to_html(img_size=:thumb)
 			return <<-HTML
 				<div class="photo-region">
-					<a href="#{page_url}" target="__page-#{id}">
-						<img class="photo" id="photo_#{id}" src="#{img_url}" title="#{title}" />
+					<a href="#{url(:page)}" target="__page-#{id}">
+						<img class="photo" id="photo_#{id}" src="#{url(img_size)}" title="#{title}" />
 					</a><br />
 					<input type="checkbox" name="photo" value="#{id}" />
 					<label for="photo_#{id}">Select</label>
 				</div>
 			HTML
 		end
-	
-	end
+
+	end # Photo
 	
 	class Gallery
 		attr_reader :user_id, :sets
 	
 		def initialize(user_id, sets)
-			@user_id = user_id;
-			@sets    = construct_sets(sets);
+			@user_id = user_id
+			@sets    = sets.map {|s| PhotoSet.new(s) }
 		end
 	
 		private 
 
-		def construct_sets(sets)
-			return [] if sets.count < 1
-			sets.map do |set|
-				PhotoSet.new(set.id, set.title, set.description, set.primary)
-			end
-		end
-	
-		def get_sets_as_html
+		def sets_as_html
 			@sets.map { |set| set.to_index_listing }.join("")
 		end
 
@@ -202,12 +237,12 @@ module Pickr
 			return <<-HTML
 				<h1>#{title}</h1>
 				<div id="set-list">
-					#{get_sets_as_html}
+					#{sets_as_html}
 				</div>
 			HTML
 		end
 	
-		def self.show_set(set_id, img_size='medium')
+		def self.show_set(set_id, img_size=:medium)
 			PhotoSet.get(set_id).to_html(img_size)
 		end
 
@@ -223,6 +258,7 @@ module Pickr
 		def to_json(&block)
 			to_hash(&block).to_json
 		end
-	end
+
+	end # Gallery
 	
-end
+end # Pickr

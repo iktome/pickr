@@ -1,13 +1,31 @@
 require 'rubygems'
 require 'sinatra'
+require 'haml'
+require 'sinatra/static_assets'
 
 require 'lib/pickr'
 
+# ajax selection window
+get '/selector' do
+	haml :selector, :layout => false
+end
+
+post '/send-request' do
+	# record request
+	# send email
+	""
+end
 
 get '/?' do
-	Pickr::Gallery.get(Pickr::USER_ID).to_html(Pickr::GALLERY_TITLE)
+	@title   = Pickr::GALLERY_TITLE
+	@gallery = Pickr::Gallery.get(Pickr::USER_ID)
+
+	haml :gallery
 end
 
 get '/:id' do
-	Pickr::PhotoSet.get(params[:id]).to_html(Pickr::SET_PHOTO_SIZE)
+	@set = Pickr::PhotoSet.get(params[:id])
+
+	haml :set
 end
+

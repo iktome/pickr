@@ -1,0 +1,7 @@
+%h1= @title
+#set-list
+	- @gallery.sets.each do |set|
+		%div{ :id => "set_#{set.id}" }			
+			%a{ :href => "/#{set.id}" }
+				%img{ :src => set.primary_photo.url, :id => set.id, :class => 'set-photo', :width => 75, :height => 75 }
+			%a{ :href => "/#{set.id}" }= set.title

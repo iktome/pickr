@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>to_html (Pickr::Photo)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/pickr.rb, line 155</span>
+                <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_html</span>(<span class="ruby-identifier">img_size</span>=<span class="ruby-value str">'thumb'</span>)
+                        <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">img_size</span>
+                        <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'square'</span>
+                                <span class="ruby-identifier">img_url</span> = <span class="ruby-identifier">to_square_url</span>
+                        <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'thumb'</span>
+                                <span class="ruby-identifier">img_url</span> = <span class="ruby-identifier">to_thumbnail_url</span>
+                        <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'medium'</span>
+                                <span class="ruby-identifier">img_url</span> = <span class="ruby-identifier">to_medium_url</span>
+                        <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'original'</span>
+                                <span class="ruby-identifier">img_url</span> = <span class="ruby-identifier">to_original_url</span>
+                        <span class="ruby-keyword kw">else</span>
+                                <span class="ruby-identifier">img_url</span> = <span class="ruby-identifier">to_thumbnail_url</span>  
+                        <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-identifier">page_url</span>  = <span class="ruby-identifier">to_page_url</span>
+                        <span class="ruby-keyword kw">return</span> <span class="ruby-value str">&quot;&lt;div class=\&quot;photo-region\&quot;&gt;\n&lt;a href=\&quot;\#{page_url}\&quot; target=\&quot;__page-\#{id}\&quot;&gt;\n&lt;img class=\&quot;photo\&quot; id=\&quot;photo_\#{id}\&quot; src=\&quot;\#{img_url}\&quot; title=\&quot;\#{title}\&quot; /&gt;\n&lt;/a&gt;&lt;br /&gt;\n&lt;input type=\&quot;checkbox\&quot; name=\&quot;photo\&quot; value=\&quot;\#{id}\&quot; /&gt;\n&lt;label for=\&quot;photo_\#{id}\&quot;&gt;Select&lt;/label&gt;\n&lt;/div&gt;\n&quot;</span>
+                <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
